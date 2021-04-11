@@ -3,7 +3,7 @@ from enum import Enum
 from typing import Callable
 
 
-def _default_cmp(a, b):
+def __default_cmp(a, b):
     return (a > b) - (a < b)
 
 
