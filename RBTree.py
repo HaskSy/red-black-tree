@@ -1,21 +1,30 @@
 from __future__ import annotations
+from enum import Enum
+from typing import Callable
+
+
+class Color(Enum):
+    BLACK = False
+    RED = True
 
 
 class RBTreeNode:
 
     def __init__(self,
                  value=None,
-                 color: bool = False,
+                 color: Color = Color.BLACK,
                  left: RBTreeNode = None,
                  right: RBTreeNode = None,
                  parent: RBTreeNode = None,
                  ) -> None:
-        """ False - black node, True - red node"""
         self.value = value
         self.left = left
         self.right = right
         self.parent = parent
         self.color = color
+
+    def __bool__(self):
+        return self.value is not None
 
 
 class RBTree:
@@ -24,20 +33,26 @@ class RBTree:
         self.root = None
         self.size = 0
 
+    def __iter__(self):
+        yield from RBTIterator(self).nodes
+
     def insert(self, value) -> None:
-        if self.root is None:
-            self.root = RBTreeNode(value, left=RBTreeNode(), right=RBTreeNode())
-            # Where RBTreeNode() - NIL leaf (Black)
+        if value is None:
+            raise Exception("Input value cannot be None")
+
+        if not self.root:
+            self.root = RBTreeNode(value, left=None, right=None)
+            # Where None - leaf (Black)
             self.size += 1
             return
 
-        node = RBTreeNode(value, color=True, left=RBTreeNode(), right=RBTreeNode())
+        node = RBTreeNode(value, color=Color.RED, left=None, right=None, parent=None)
 
         pointer = self.root
         parent = None
 
         # finding a parent node
-        while pointer.value is not None:
+        while pointer:
             parent = pointer
             if node.value == parent.value:
                 return  # value already contains in the tree
@@ -58,6 +73,20 @@ class RBTree:
         self.__fix_coloring(node)
         self.size += 1
 
+    def find(self, value):
+        root = self.root
+        while root is not None:
+            if value > root.value:
+                root = root.right
+            elif value < root.value:
+                root = root.left
+            else:
+                break
+        return root
+
+    def contains(self, value) -> bool:
+        return bool(self.find(value))
+
     def __fix_coloring(self, node: RBTreeNode) -> None:
 
         """
@@ -65,86 +94,118 @@ class RBTree:
         then there is no need to fix anything
         """
         if node.parent.parent is None \
-                or node.color is False \
-                or node.parent.color is False:
+                or node.color is Color.BLACK \
+                or node.parent.color is Color.BLACK:
             return
 
-        while node.parent.color is True:  # is red
+        while node.parent and node.parent.color is Color.RED:  # is red
 
             # made just for a bit more comfortable code reading
             parent = node.parent
             grandparent = parent.parent
 
             if parent == grandparent.left:
+
                 uncle = grandparent.right
 
-                if uncle.value is not None:
-                    if uncle.color is True:
-                        parent.color = False
-                        uncle.color = False
-                        grandparent.color = True
-                        node = grandparent
+                if uncle and uncle.color is Color.RED:
+                    parent.color = Color.BLACK
+                    uncle.color = Color.BLACK
+                    grandparent.color = Color.RED
+                    node = grandparent
 
-                else:  # uncle.value is None
+                else:  # uncle doesn't exist or black
                     if node == parent.right:
                         node = parent
                         self.__left_rotate(node)
-                    parent.color = False
-                    grandparent.color = True
+
+                    parent.color = Color.BLACK
+                    grandparent.color = Color.RED
                     self.__right_rotate(grandparent)
 
             else:  # parent == grandparent.right
+
                 uncle = grandparent.left
+                if uncle and uncle.color is Color.RED:
+                    parent.color = Color.BLACK
+                    uncle.color = Color.BLACK
+                    grandparent.color = Color.RED
+                    node = grandparent
 
-                if uncle.value is not None:
-                    if uncle.color is True:
-                        parent.color = False
-                        uncle.color = False
-                        grandparent.color = True
-                        node = grandparent
-
-                else:  # uncle.value is None
-                    if node == parent.right:
+                else:  # uncle doesn't exist or black
+                    if node == parent.left:
                         node = parent
                         self.__right_rotate(node)
-                    parent.color = False
-                    grandparent.color = True
+
+                    parent.color = Color.BLACK
+                    grandparent.color = Color.RED
                     self.__left_rotate(grandparent)
 
-        self.root.color = False
+        self.root.color = Color.BLACK
 
     def __left_rotate(self, node: RBTreeNode) -> None:
 
-        right_child = node.right
-        node.right = right_child.left
-        if right_child.left != RBTreeNode():
-            right_child.left.parent = node
-        right_child.parent = node.parent
+        tmp = node.right
 
-        if node.parent != RBTreeNode():
-            self.root = right_child
-        elif node == node.parent.left:
-            node.parent.left = right_child
+        node.right = tmp.left
+        if tmp.left:
+            tmp.left.parent = node
+
+        if tmp:
+            tmp.parent = node.parent
+        if node.parent:
+            if node == node.parent.left:
+                node.parent.left = tmp
+            else:
+                node.parent.right = tmp
         else:
-            node.parent.right = right_child
+            self.root = tmp
 
-        right_child.left = node
-        node.parent = right_child
+        tmp.left = node
+        if node:
+            node.parent = tmp
 
     def __right_rotate(self, node: RBTreeNode) -> None:
 
-        left_child = node.left
-        node.left = left_child.right
-        if left_child.right != RBTreeNode():
-            left_child.right.parent = node
-        left_child.parent = node.parent
+        tmp = node.left
 
-        if node.parent != RBTreeNode():
-            self.root = left_child
-        elif node == node.parent.left:
-            node.parent.left = left_child
+        node.left = tmp.right
+        if tmp.right:
+            tmp.right.parent = node
+
+        if tmp:
+            tmp.parent = node.parent
+        if node.parent:
+            if node == node.parent.right:
+                node.parent.right = tmp
+            else:
+                node.parent.left = tmp
         else:
-            node.parent.right = left_child
+            self.root = tmp
 
-        left_child.right = node
-        node.parent = left_child
+        tmp.right = node
+        if node:
+            node.parent = tmp
+
+
+class RBTIterator(RBTree):
+    def __init__(self, tree: RBTree):
+        super().__init__()
+        self.root = tree.root
+        self.nodes = []
+        self.index = -1
+        self.traverse(self.root)
+
+    def traverse(self, root):
+        if not root:
+            return
+        self.traverse(root.left)
+        self.nodes.append(root)
+        self.traverse(root.right)
+
+    def next(self) -> int:
+        self.index += 1
+        return self.nodes[self.index]
+
+    def has_next(self) -> bool:
+        return self.index < len(self.nodes) - 1
