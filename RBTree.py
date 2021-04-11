@@ -3,6 +3,10 @@ from enum import Enum
 from typing import Callable
 
 
+def _default_cmp(a, b):
+    return (a > b) - (a < b)
+
+
 class Color(Enum):
     BLACK = False
     RED = True
@@ -29,9 +33,10 @@ class RBTreeNode:
 
 class RBTree:
 
-    def __init__(self):
+    def __init__(self, comparator=_default_cmp):
         self.root = None
         self.size = 0
+        self.cmp = comparator
 
     def __iter__(self):
         yield from RBTIterator(self).nodes
@@ -54,10 +59,10 @@ class RBTree:
         # finding a parent node
         while pointer:
             parent = pointer
-            if node.value == parent.value:
+            if self.cmp(node.value, parent.value) == 0:
                 return  # value already contains in the tree
 
-            elif pointer.value < node.value:
+            elif self.cmp(pointer.value, node.value) < 0:
                 pointer = pointer.right
 
             else:
@@ -65,7 +70,7 @@ class RBTree:
 
         node.parent = parent
 
-        if parent.value < node.value:
+        if self.cmp(parent.value, node.value) < 0:
             parent.right = node
         else:
             parent.left = node
@@ -76,9 +81,9 @@ class RBTree:
     def find(self, value):
         root = self.root
         while root is not None:
-            if value > root.value:
+            if self.cmp(value, root.value) > 0:
                 root = root.right
-            elif value < root.value:
+            elif self.cmp(value, root.value) < 0:
                 root = root.left
             else:
                 break
