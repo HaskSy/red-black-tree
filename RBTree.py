@@ -3,7 +3,7 @@ from enum import Enum
 from typing import Callable
 
 
-def __default_cmp(a, b):
+def _default_cmp(a, b):
     return (a > b) - (a < b)
 
 
@@ -33,7 +33,7 @@ class RBTreeNode:
 
 class RBTree:
 
-    def __init__(self, comparator=__default_cmp):
+    def __init__(self, comparator=_default_cmp):
         self.root = None
         self.size = 0
         self.cmp = comparator
