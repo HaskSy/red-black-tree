@@ -33,7 +33,7 @@ class RBTreeNode:
 
 class RBTree:
 
-    def __init__(self, comparator=_default_cmp):
+    def __init__(self, comparator: Callable = _default_cmp):
         self.root = None
         self.size = 0
         self.cmp = comparator
