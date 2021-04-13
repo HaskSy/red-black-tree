@@ -105,46 +105,44 @@ class RBTree:
 
         while node.parent and node.parent.color is Color.RED:  # is red
 
-            # made just for a bit more comfortable code reading
-            parent = node.parent
-            grandparent = parent.parent
+            # parent = node.parent, grandparent = parent.parent
 
-            if parent == grandparent.left:
+            if node.parent == node.parent.parent.left:
 
-                uncle = grandparent.right
+                uncle = node.parent.parent.right
 
                 if uncle and uncle.color is Color.RED:
-                    parent.color = Color.BLACK
+                    node.parent.color = Color.BLACK
                     uncle.color = Color.BLACK
-                    grandparent.color = Color.RED
-                    node = grandparent
+                    node.parent.parent.color = Color.RED
+                    node = node.parent.parent
 
                 else:  # uncle doesn't exist or black
-                    if node == parent.right:
-                        node = parent
+                    if node == node.parent.right:
+                        node = node.parent
                         self.__left_rotate(node)
 
-                    parent.color = Color.BLACK
-                    grandparent.color = Color.RED
-                    self.__right_rotate(grandparent)
+                    node.parent.color = Color.BLACK
+                    node.parent.parent.color = Color.RED
+                    self.__right_rotate(node.parent.parent)
 
             else:  # parent == grandparent.right
 
-                uncle = grandparent.left
+                uncle = node.parent.parent.left
                 if uncle and uncle.color is Color.RED:
-                    parent.color = Color.BLACK
+                    node.parent.color = Color.BLACK
                     uncle.color = Color.BLACK
-                    grandparent.color = Color.RED
-                    node = grandparent
+                    node.parent.parent.color = Color.RED
+                    node = node.parent.parent
 
                 else:  # uncle doesn't exist or black
-                    if node == parent.left:
-                        node = parent
+                    if node == node.parent.left:
+                        node = node.parent
                         self.__right_rotate(node)
 
-                    parent.color = Color.BLACK
-                    grandparent.color = Color.RED
-                    self.__left_rotate(grandparent)
+                    node.parent.color = Color.BLACK
+                    node.parent.parent.color = Color.RED
+                    self.__left_rotate(node.parent.parent)
 
         self.root.color = Color.BLACK
 
@@ -158,6 +156,7 @@ class RBTree:
 
         if tmp:
             tmp.parent = node.parent
+
         if node.parent:
             if node == node.parent.left:
                 node.parent.left = tmp
@@ -180,6 +179,7 @@ class RBTree:
 
         if tmp:
             tmp.parent = node.parent
+
         if node.parent:
             if node == node.parent.right:
                 node.parent.right = tmp
