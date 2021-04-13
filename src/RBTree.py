@@ -28,7 +28,7 @@ class RBTreeNode:
         self.color = color
 
     def __bool__(self):
-        return self.value is not None
+        return self is not None and self.value is not None
 
 
 class RBTree:
@@ -78,9 +78,11 @@ class RBTree:
         self.__fix_coloring(node)
         self.size += 1
 
-    def find(self, value):
+    def find(self, value) -> RBTreeNode:
         root = self.root
-        while root is not None:
+        while True:
+            if root is None:  # this value not in the tree
+                return
             if self.cmp(value, root.value) > 0:
                 root = root.right
             elif self.cmp(value, root.value) < 0:
@@ -89,8 +91,34 @@ class RBTree:
                 break
         return root
 
+    def black_height(self, value) -> int:
+        """
+        height counts black nodes starting with Node(value) and doesn't count last NIL node
+        """
+        root = self.find(value)
+        height = 0
+
+        if root is None:  # this value not in the tree
+            return
+
+        while True:
+            if root.color is Color.BLACK:
+                height += 1
+
+            if root.left:
+                root = root.left
+            elif root.right:
+                root = root.right
+            else:
+                return height
+
+
     def contains(self, value) -> bool:
         return bool(self.find(value))
+
+    def vertices_count(self) -> int:
+        return self.size
+
 
     def __fix_coloring(self, node: RBTreeNode) -> None:
 
@@ -201,14 +229,14 @@ class RBTIterator(RBTree):
         self.index = -1
         self.traverse(self.root)
 
-    def traverse(self, root):
+    def traverse(self, root) -> None:
         if not root:
             return
         self.traverse(root.left)
         self.nodes.append(root)
         self.traverse(root.right)
 
-    def next(self) -> int:
+    def next(self) -> RBTreeNode:
         self.index += 1
         return self.nodes[self.index]
 
