@@ -1,6 +1,6 @@
 import unittest
 
-from RBTree import *
+from src.RBTree import *
 
 
 class TestRBTree(unittest.TestCase):
@@ -47,16 +47,16 @@ class TestRBTree(unittest.TestCase):
         root = RBTreeNode(value=10, color=Color.BLACK, parent=None)
 
         # LEFT SUBTREE
-        node_m10 = RBTreeNode(value=-10, color=Color.BLACK, parent=root, left=None, right=None)
-        node_7 = RBTreeNode(value=7, color=Color.RED, parent=node_m10, left=None, right=None)
-        node_m10.right = node_7
+        node_n10 = RBTreeNode(value=-10, color=Color.BLACK, parent=root, left=None, right=None)
+        node_7 = RBTreeNode(value=7, color=Color.RED, parent=node_n10, left=None, right=None)
+        node_n10.right = node_7
 
         # RIGHT SUBTREE
         node_20 = RBTreeNode(value=20, color=Color.BLACK, parent=root, left=None, right=None)
         node_15 = RBTreeNode(value=15, color=Color.RED, parent=node_20, left=None, right=None)
         node_20.left = node_15
 
-        root.left = node_m10
+        root.left = node_n10
         root.right = node_20
 
         rb_tree.root = root
