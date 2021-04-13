@@ -1,9 +1,15 @@
 import unittest
 
 from src.RBTree import *
+from src.RBTree import _default_cmp
 
 
 class TestRBTree(unittest.TestCase):
+
+    def test_default_cmp(self):
+        self.assertEqual(_default_cmp(3, 5), -1)
+        self.assertEqual(_default_cmp(10, 3), 1)
+        self.assertEqual(_default_cmp(5, 5), 0)
 
     def test_search(self):
         rb_tree = RBTree()
@@ -22,7 +28,7 @@ class TestRBTree(unittest.TestCase):
         rb_tree.insert(6)
         node_6 = node_13.left
         rb_tree.insert(7)
-        node_7 = node_6.right
+        node_7 = node_5.right
         rb_tree.insert(23)
         node_23 = node_13.right
 
