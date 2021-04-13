@@ -7,7 +7,7 @@ This implementation was made especially for JetBrains Internships 2021
 
 # Testing
 
-to run tests using console:
+To run tests using console:
  * Please launch tests from the root directory of project
  * If you want to run all test files (well now there is only one), then type in console:
 ```bash
