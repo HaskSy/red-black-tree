@@ -19,7 +19,6 @@ class TestRandomInputs(unittest.TestCase):
                 rb_tree.insert(elem)
 
             array.sort()
-            print(array)
             values = list(map(lambda x: x.value, rb_tree))
             self.assertEqual(array, values)
 
