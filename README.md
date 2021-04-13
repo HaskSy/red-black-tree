@@ -9,7 +9,7 @@ This implementation was made especially for JetBrains Internships 2021
 
 To run tests using console:
  * Please launch tests from the root directory of project
- * If you want to run all test files (well now there is only one), then type in console:
+ * If you want to run all test files, then type in console:
 ```bash
 python -m unittest discover tests
 ```
