@@ -19,6 +19,7 @@ class TestRandomInputs(unittest.TestCase):
                 rb_tree.insert(elem)
 
             array.sort()
+            print(array)
             values = list(map(lambda x: x.value, rb_tree))
             self.assertEqual(array, values)
 
@@ -69,8 +70,6 @@ class TestRandomInputs(unittest.TestCase):
 
                 # Black height equality
                 self.assertTrue(height_helper(node) != -1)
-
-
 
 
 if __name__ == '__main__':

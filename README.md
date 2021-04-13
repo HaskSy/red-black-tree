@@ -17,3 +17,17 @@ python -m unittest discover tests
 ```bash
 python -m unittest tests/test_RBTree.py
 ```
+or any other test file.
+
+
+Things which are tested:
+
+1) test_RBTree.py - non-randomized tests
+    * Default comparator checking
+    * Check proper work of find() and contains() function 
+    * Testing left and right rotation
+    
+2) test_random_inputs.py - randomized tests
+    * For each test func creates 20 different arrays with 25 or less data.
+    * Testing include() (avoiding taking attributes from NoneType)
+    * Checking tree for coloring mistakes

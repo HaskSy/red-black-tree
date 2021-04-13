@@ -112,13 +112,11 @@ class RBTree:
             else:
                 return height
 
-
     def contains(self, value) -> bool:
         return bool(self.find(value))
 
     def vertices_count(self) -> int:
         return self.size
-
 
     def __fix_coloring(self, node: RBTreeNode) -> None:
 

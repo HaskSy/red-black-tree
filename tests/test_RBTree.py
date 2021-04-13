@@ -48,6 +48,23 @@ class TestRBTree(unittest.TestCase):
         self.assertIsNone(rb_tree.find(4101))
         self.assertIsNone(rb_tree.find(600001))
 
+    def test_contains(self):
+        rb_tree = RBTree()
+
+        array = [-82, 29, 20, 21, -23, 52, 60, 70, 31, 49, -51, -43, -42, -40, 6, 12, 19, 91, 93, -61, -60, -52, -2, 2]
+
+        for elem in array:
+            rb_tree.insert(elem)
+
+        for elem in array:
+            self.assertTrue(rb_tree.contains(elem))
+
+        self.assertFalse(rb_tree.contains(0))
+        self.assertFalse(rb_tree.contains(-55))
+        self.assertFalse(rb_tree.contains(100))
+        self.assertFalse(rb_tree.contains(99))
+        self.assertFalse(rb_tree.contains(422))
+
     def test_right_rotation(self):
         rb_tree = RBTree()
         root = RBTreeNode(value=10, color=Color.BLACK, parent=None)
